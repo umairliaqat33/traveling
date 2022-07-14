@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:expenses_app/models/Transact.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:traveling/screens/Login_Screen.dart';
 
 // import 'package:provider/provider.dart';
 // import 'package:expenses_app/widgets/chart.dart';
@@ -54,6 +55,12 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
               tag: 'logo',
               child: Image.asset('assets/images/logo.png'),
             ),
+            IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                },
+                icon: Icon(Icons.logout)),
             Text(
               "Welcome",
               style: TextStyle(
@@ -71,6 +78,28 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
                 fontSize: 30,
                 fontFamily: 'Quicksand',
               ),
+            ),
+            AlertDialog(
+              title: Text("Welcome"),
+              content: Text("Want to verify again?"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                    },
+                    child: Text("Go back?")),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => WelcomeUserScreen()),
+                      );
+                    },
+                    child: Text("or not?")),
+              ],
             ),
           ],
         ),
