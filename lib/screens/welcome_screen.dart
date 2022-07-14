@@ -29,79 +29,82 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
   //   });
   // }
 
-  void getValues() {
-    FirebaseFirestore
-        .instance //this is how we get data from firebase about a particular field as we can see in lname and fname
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      setState(() {
-        lname = value.get('lastName');
-        fname = value.get('firstName');
-      });
-    });
-  }
+  // void getValues() {
+  //   FirebaseFirestore
+  //       .instance //this is how we get data from firebase about a particular field as we can see in lname and fname
+  //       .collection("users")
+  //       .doc(user!.uid)
+  //       .get()
+  //       .then((value) {
+  //     setState(() {
+  //       lname = value.get('lastName');
+  //       fname = value.get('firstName');
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: Image.asset('assets/images/logo.png'),
-            ),
-            IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()));
-                },
-                icon: Icon(Icons.logout)),
-            Text(
-              "Welcome",
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-                fontFamily: 'Quicksand',
+        child: Container(
+          width: 300,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Hero(
+                tag: 'logo',
+                child: Image.asset('assets/images/Traveling_logo.png'),
               ),
-            ),
-            Text(
-              "${fname} ${lname}",
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-                fontFamily: 'Quicksand',
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                  },
+                  icon: Icon(Icons.logout)),
+              Text(
+                "Welcome",
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  fontFamily: 'Quicksand',
+                ),
               ),
-            ),
-            AlertDialog(
-              title: Text("Welcome"),
-              content: Text("Want to verify again?"),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                    },
-                    child: Text("Go back?")),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) => WelcomeUserScreen()),
-                      );
-                    },
-                    child: Text("or not?")),
-              ],
-            ),
-          ],
+              Text(
+                FirebaseAuth.instance.currentUser!.uid,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  fontFamily: 'Quicksand',
+                ),
+              ),
+              // AlertDialog(
+              //   title: Text("Welcome"),
+              //   content: Text("Want to verify again?"),
+              //   actions: [
+              //     TextButton(
+              //         onPressed: () {
+              //           Navigator.pushReplacement(
+              //               context,
+              //               MaterialPageRoute(
+              //                   builder: (context) => LoginScreen()));
+              //         },
+              //         child: Text("Go back?")),
+              //     TextButton(
+              //         onPressed: () {
+              //           Navigator.of(context).pushReplacement(
+              //             MaterialPageRoute(
+              //                 builder: (context) => WelcomeUserScreen()),
+              //           );
+              //         },
+              //         child: Text("or not?")),
+              //   ],
+              // ),
+            ],
+          ),
         ),
       ),
     );

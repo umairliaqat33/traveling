@@ -25,13 +25,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  MobileVerificationState currentState = MobileVerificationState.SHOW_MOBILE_FORM_STATE;
+  MobileVerificationState currentState =
+      MobileVerificationState.SHOW_MOBILE_FORM_STATE;
   late String verificationId;
 
   final phoneController = TextEditingController();
   final OTPController = TextEditingController();
   String pattern = r'(^(?:[0]9)?[0-9]{11,12}$)';
   final _formKey = GlobalKey<FormState>();
+  final _OTPFormKey=GlobalKey<FormState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
@@ -65,10 +67,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       return "Field required";
                     }
                     if (!RegExp(pattern).hasMatch(value)) {
-                      // this will be checking whether the value in it is an email or not?
-                      return "Enter a valid phone";
+                      // this will be checking whether the value in it is a phone number or not?
+                      return null;
                     }
-                    return null;
+                    return "Enter a valid phone";
                   },
                   cursorColor: Colors.teal,
                   textInputAction: TextInputAction.next,
@@ -76,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   textAlign: TextAlign.center,
                   controller: phoneController,
                   decoration: kMessageTextFieldDecoration.copyWith(
-                    hintText: 'Enter Your phone',
+                    hintText: '+92----------',
                     icon: Icon(Icons.phone),
                   ),
                 ),
@@ -91,41 +93,58 @@ class _LoginScreenState extends State<LoginScreen> {
                     elevation: 5.0,
                     child: MaterialButton(
                       onPressed: () async {
-                        setState(() {
-                          showSpinner = true;
-                        });
-                        await _auth.verifyPhoneNumber(
-                          phoneNumber: phoneController.text,
-                          verificationCompleted: (phoneAuthCredential) async {
-                            setState(() {
-                              showSpinner = false;
-                            });
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>WelcomeUserScreen()));
-                          },
-                          verificationFailed: (verificationFailed) async {
-                            _scaffoldState.currentState!.showBottomSheet(
-                              (context) => SnackBar(
-                                content:
-                                    Text(verificationFailed.message.toString()),
-                              ),
-                            );
-                            Navigator.of(context).pop();
-                          },
-                          codeSent: (verificationID, resendingToken) async {
-                            setState(() {
-                              this.verificationId = verificationID;
-                              showSpinner = false;
-                              // sleep(const Duration(seconds: 5));
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => OTP()),
-                              // );
-                              currentState=MobileVerificationState.SHOW_OTP_FORM_STATE;
-                            });
-                          },
-                          codeAutoRetrievalTimeout: (verificationId) async {},
-                        );
-                        FocusManager.instance.primaryFocus?.unfocus();
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            showSpinner = true;
+                          });
+                          await _auth.verifyPhoneNumber(
+                            phoneNumber: phoneController.text,
+                            verificationCompleted: (phoneAuthCredential) async {
+                              setState(() {
+                                showSpinner = false;
+                              });
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          WelcomeUserScreen()));
+                              Fluttertoast.showToast(msg: "Number verified");
+                            },
+                            verificationFailed: (verificationFailed) async {
+                              _scaffoldState.currentState!.showBottomSheet(
+                                (context) => SnackBar(
+                                  content: Text(
+                                      verificationFailed.message.toString()),
+                                ),
+                              );
+                              Fluttertoast.showToast(
+                                  msg: "Verification Failed" +
+                                      verificationFailed.message.toString());
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
+                            },
+                            codeSent: (verificationID, resendingToken) async {
+                              setState(() {
+                                this.verificationId = verificationID;
+                                showSpinner = false;
+                                // sleep(const Duration(seconds: 5));
+                                // Navigator.pushReplacement(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) => OTP()),
+                                // );
+                                currentState =
+                                    MobileVerificationState.SHOW_OTP_FORM_STATE;
+                              });
+                              Fluttertoast.showToast(msg: "Code Sent");
+                            },
+                            codeAutoRetrievalTimeout: (verificationId) async {},
+                            timeout: Duration(seconds: 90),
+                          );
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        }
+                        ;
                       },
                       minWidth: 200.0,
                       height: 42.0,
@@ -172,34 +191,40 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         Container(
           width: 400,
-          child: TextFormField(
-            inputFormatters: <TextInputFormatter>[
-              new LengthLimitingTextInputFormatter(6),
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            validator: (value) {
-              if (value!.isEmpty) {
-                // this will be checking if we have any value in it or not?
-                return "Field required";
-              }
-              return null;
-            },
-            textInputAction: TextInputAction.done,
-            cursorColor: Colors.teal,
-            keyboardType: TextInputType.number,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black),
-            controller: OTPController,
-            decoration: numberFieldDecoration,
+          child: Form(
+            key: _OTPFormKey,
+            child: TextFormField(
+              inputFormatters: <TextInputFormatter>[
+                new LengthLimitingTextInputFormatter(6),
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              validator: (value) {
+                if (value!.isEmpty) {
+                  // this will be checking if we have any value in it or not?
+                  return "Field required";
+                }
+                return null;
+              },
+              textInputAction: TextInputAction.done,
+              cursorColor: Colors.teal,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black),
+              controller: OTPController,
+              decoration: numberFieldDecoration,
+            ),
           ),
         ),
+        Text("code will be sent after 90 seconds if not verified"),
         TextButton(
             onPressed: () async {
-              PhoneAuthCredential phoneAuthController =
-                  PhoneAuthProvider.credential(
-                      verificationId: verificationId,
-                      smsCode: OTPController.text);
-              signInWithPhoneAuthCredential(phoneAuthController);
+              if (_OTPFormKey.currentState!.validate()) {
+                PhoneAuthCredential phoneAuthController =
+                    PhoneAuthProvider.credential(
+                        verificationId: verificationId,
+                        smsCode: OTPController.text);
+                signInWithPhoneAuthCredential(phoneAuthController);
+              }
             },
             child: Text("Verify"))
       ],
