@@ -29,19 +29,19 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
   //   });
   // }
 
-  // void getValues() {
-  //   FirebaseFirestore
-  //       .instance //this is how we get data from firebase about a particular field as we can see in lname and fname
-  //       .collection("users")
-  //       .doc(user!.uid)
-  //       .get()
-  //       .then((value) {
-  //     setState(() {
-  //       lname = value.get('lastName');
-  //       fname = value.get('firstName');
-  //     });
-  //   });
-  // }
+  void getValues() {
+    FirebaseFirestore
+        .instance //this is how we get data from firebase about a particular field as we can see in lname and fname
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        lname = value.get('lastName');
+        fname = value.get('firstName');
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
                 ),
               ),
               Text(
-                FirebaseAuth.instance.currentUser!.uid,
+                "${fname} ${lname}",
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,

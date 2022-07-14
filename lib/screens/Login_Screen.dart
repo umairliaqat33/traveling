@@ -31,12 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final phoneController = TextEditingController();
   final OTPController = TextEditingController();
-  String pattern = r'(^(?:[0]9)?[0-9]{11,12}$)';
+  String pattern = r'(^(?:[+]9)?[0-9]{13,13}$)';
   final _formKey = GlobalKey<FormState>();
   final _OTPFormKey=GlobalKey<FormState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool showSpinner = false;
-  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey();
 
   getMobileFormWidget(context) {
     return ModalProgressHUD(
@@ -109,17 +108,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       builder: (context) =>
                                           WelcomeUserScreen()));
                               Fluttertoast.showToast(msg: "Number verified");
+                              print(phoneAuthCredential.toString());
                             },
                             verificationFailed: (verificationFailed) async {
-                              _scaffoldState.currentState!.showBottomSheet(
-                                (context) => SnackBar(
-                                  content: Text(
-                                      verificationFailed.message.toString()),
-                                ),
-                              );
                               Fluttertoast.showToast(
                                   msg: "Verification Failed" +
                                       verificationFailed.message.toString());
+                              print(verificationFailed.message.toString());
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -138,6 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     MobileVerificationState.SHOW_OTP_FORM_STATE;
                               });
                               Fluttertoast.showToast(msg: "Code Sent");
+                              print(verificationID.toString());
+                              print(resendingToken.toString());
                             },
                             codeAutoRetrievalTimeout: (verificationId) async {},
                             timeout: Duration(seconds: 90),
@@ -252,16 +249,14 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         showSpinner = false;
       });
-      _scaffoldState.currentState!.showBottomSheet((context) => SnackBar(
-            content: Text(e.message.toString()),
-          ));
+      Fluttertoast.showToast(msg: e.message.toString());
+      print(e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldState,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
