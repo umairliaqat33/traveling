@@ -41,4 +41,3 @@ const numberFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(12.0)),
   ),
 );
-

@@ -31,14 +31,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final F_name_Controller = TextEditingController();
   final OTPController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _OTPFormKey=GlobalKey<FormState>();
+  final _OTPFormKey = GlobalKey<FormState>();
 
   bool showSpinner = false;
   String pattern = "^[0][\d]{3}-[\d]{7}\$";
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_REGISTER_FORM_STATE;
   late String verificationId;
-
 
   getOTPFormWidget(context) {
     return Column(
@@ -78,9 +77,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             onPressed: () async {
               if (_OTPFormKey.currentState!.validate()) {
                 PhoneAuthCredential phoneAuthController =
-                PhoneAuthProvider.credential(
-                    verificationId: verificationId,
-                    smsCode: OTPController.text);
+                    PhoneAuthProvider.credential(
+                        verificationId: verificationId,
+                        smsCode: OTPController.text);
                 signInWithPhoneAuthCredential(phoneAuthController);
               }
             },
@@ -89,8 +88,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-
-
   void signInWithPhoneAuthCredential(
       PhoneAuthCredential phoneAuthController) async {
     setState(() {
@@ -98,7 +95,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     });
     try {
       final authCredential =
-      await _auth.signInWithCredential(phoneAuthController);
+          await _auth.signInWithCredential(phoneAuthController);
       postDetailsToFireStore(context);
       setState(() {
         showSpinner = false;
@@ -118,9 +115,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-
-  getRegister(context){
-   return ModalProgressHUD(
+  getRegister(context) {
+    return ModalProgressHUD(
       inAsyncCall: showSpinner,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -228,8 +224,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           });
                           await _auth.verifyPhoneNumber(
                             phoneNumber: phoneController.text,
-                            verificationCompleted:
-                                (phoneAuthCredential) async {
+                            verificationCompleted: (phoneAuthCredential) async {
                               setState(() {
                                 showSpinner = false;
                               });
@@ -260,15 +255,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 //   context,
                                 //   MaterialPageRoute(builder: (context) => OTP()),
                                 // );
-                                currentState = MobileVerificationState
-                                    .SHOW_OTP_FORM_STATE;
+                                currentState =
+                                    MobileVerificationState.SHOW_OTP_FORM_STATE;
                               });
                               Fluttertoast.showToast(msg: "Code Sent");
                               print(verificationID);
                               print(resendingToken);
                             },
-                            codeAutoRetrievalTimeout:
-                                (verificationId) async {},
+                            codeAutoRetrievalTimeout: (verificationId) async {},
                             timeout: Duration(seconds: 90),
                           );
                           FocusManager.instance.primaryFocus?.unfocus();
@@ -295,7 +289,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       style: ButtonStyle(
                           splashFactory: NoSplash
                               .splashFactory //removing onclick splash color
-                      ),
+                          ),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -347,8 +341,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void SignUp(String phoneNumb) async {
     if (_formKey.currentState!.validate()) {
       try {
-        await _auth.signInWithPhoneNumber(phoneNumb).then((value) {
-        }).catchError((e) {
+        await _auth
+            .signInWithPhoneNumber(phoneNumb)
+            .then((value) {})
+            .catchError((e) {
           Fluttertoast.showToast(msg: e.toString());
           print(e.toString());
         });
@@ -376,17 +372,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     userModel.Lname = L_name_Controller.text;
     userModel.uid = user?.uid;
 
-    try{
-
+    try {
       await firebaseFirestore
           .collection('users')
           .doc(user?.uid)
           .set(userModel.toMap());
       showSpinner = false;
       Fluttertoast.showToast(msg: "Account Created Successfully");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => WelcomeUserScreen()));
-    }catch(e){
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => WelcomeUserScreen()));
+    } catch (e) {
       print(e.toString());
       Fluttertoast.showToast(msg: e.toString());
     }

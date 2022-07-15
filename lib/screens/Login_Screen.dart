@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final OTPController = TextEditingController();
   String pattern = r'(^(?:[+]9)?[0-9]{13,13}$)';
   final _formKey = GlobalKey<FormState>();
-  final _OTPFormKey=GlobalKey<FormState>();
+  final _OTPFormKey = GlobalKey<FormState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool showSpinner = false;
 

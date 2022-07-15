@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:expenses_app/models/Transact.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:traveling/screens/Login_Screen.dart';
 
 // import 'package:provider/provider.dart';
@@ -30,21 +31,32 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
   // }
 
   void getValues() {
-    FirebaseFirestore
-        .instance //this is how we get data from firebase about a particular field as we can see in lname and fname
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      setState(() {
-        lname = value.get('lastName');
-        fname = value.get('firstName');
+    try {
+      FirebaseFirestore
+          .instance //this is how we get data from firebase about a particular field as we can see in lname and fname
+          .collection("users")
+          .doc(user!.uid)
+          .get()
+          .then((value) {
+        setState(() {
+          lname = value.get('lastName');
+          fname = value.get('firstName');
+        });
       });
-    });
+      // setState(() {
+      //   lname = FirebaseAuth.instance.currentUser!.displayName.toString();
+      // fname = value.get('firstName');
+      // });
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      print(e.toString());
+    }
+    // FirebaseAuth.instance.currentUser?.displayName;
   }
 
   @override
   Widget build(BuildContext context) {
+    getValues();
     return Scaffold(
       body: Center(
         child: Container(
