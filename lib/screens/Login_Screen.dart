@@ -31,7 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final phoneController = TextEditingController();
   final OTPController = TextEditingController();
-  String pattern = r'(^(?:[+]9)?[0-9]{13,13}$)';
+  String pattern = '^(?:[+0]9)?[0-9]{11}\$';
+
+  // RegExp regExp=new RegExp(pattern);
   final _formKey = GlobalKey<FormState>();
   final _OTPFormKey = GlobalKey<FormState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -67,9 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     if (!RegExp(pattern).hasMatch(value)) {
                       // this will be checking whether the value in it is a phone number or not?
-                      return null;
+                      return "Enter a valid phone";
                     }
-                    return "Enter a valid phone";
+                    return null;
                   },
                   cursorColor: Colors.teal,
                   textInputAction: TextInputAction.next,
@@ -92,56 +94,62 @@ class _LoginScreenState extends State<LoginScreen> {
                     elevation: 5.0,
                     child: MaterialButton(
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            showSpinner = true;
-                          });
-                          await _auth.verifyPhoneNumber(
-                            phoneNumber: phoneController.text,
-                            verificationCompleted: (phoneAuthCredential) async {
-                              setState(() {
-                                showSpinner = false;
-                              });
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          WelcomeUserScreen()));
-                              Fluttertoast.showToast(msg: "Number verified");
-                              print(phoneAuthCredential.toString());
-                            },
-                            verificationFailed: (verificationFailed) async {
-                              Fluttertoast.showToast(
-                                  msg: "Verification Failed" +
-                                      verificationFailed.message.toString());
-                              print(verificationFailed.message.toString());
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
-                            },
-                            codeSent: (verificationID, resendingToken) async {
-                              setState(() {
-                                this.verificationId = verificationID;
-                                showSpinner = false;
-                                // sleep(const Duration(seconds: 5));
-                                // Navigator.pushReplacement(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) => OTP()),
-                                // );
-                                currentState =
-                                    MobileVerificationState.SHOW_OTP_FORM_STATE;
-                              });
-                              Fluttertoast.showToast(msg: "Code Sent");
-                              print(verificationID.toString());
-                              print(resendingToken.toString());
-                            },
-                            codeAutoRetrievalTimeout: (verificationId) async {},
-                            timeout: Duration(seconds: 90),
-                          );
-                          FocusManager.instance.primaryFocus?.unfocus();
+                        try {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              showSpinner = true;
+                            });
+                            await _auth.verifyPhoneNumber(
+                              phoneNumber: phoneController.text,
+                              verificationCompleted: (
+                                  phoneAuthCredential) async {
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            WelcomeUserScreen()));
+                                Fluttertoast.showToast(msg: "Number verified");
+                                print(phoneAuthCredential.toString());
+                              },
+                              verificationFailed: (verificationFailed) async {
+                                Fluttertoast.showToast(
+                                    msg: "Verification Failed" +
+                                        verificationFailed.message.toString());
+                                print(verificationFailed.message.toString());
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()));
+                              },
+                              codeSent: (verificationID, resendingToken) async {
+                                setState(() {
+                                  this.verificationId = verificationID;
+                                  showSpinner = false;
+                                  // sleep(const Duration(seconds: 5));
+                                  // Navigator.pushReplacement(
+                                  //   context,
+                                  //   MaterialPageRoute(builder: (context) => OTP()),
+                                  // );
+                                  currentState =
+                                      MobileVerificationState
+                                          .SHOW_OTP_FORM_STATE;
+                                });
+                                Fluttertoast.showToast(msg: "Code Sent");
+                                print(verificationID.toString());
+                                print(resendingToken.toString());
+                              },
+                              codeAutoRetrievalTimeout: (
+                                  verificationId) async {},
+                              // timeout: Duration(seconds: 90),
+                            );
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          }
+                        }catch(e){
+                          print(e.toString());
                         }
-                        ;
                       },
                       minWidth: 200.0,
                       height: 42.0,
@@ -160,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ButtonStyle(
                           splashFactory: NoSplash
                               .splashFactory //removing onclick splash color
-                          ),
+                      ),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -217,9 +225,9 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () async {
               if (_OTPFormKey.currentState!.validate()) {
                 PhoneAuthCredential phoneAuthController =
-                    PhoneAuthProvider.credential(
-                        verificationId: verificationId,
-                        smsCode: OTPController.text);
+                PhoneAuthProvider.credential(
+                    verificationId: verificationId,
+                    smsCode: OTPController.text);
                 signInWithPhoneAuthCredential(phoneAuthController);
               }
             },
@@ -235,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       final authCredential =
-          await _auth.signInWithCredential(phoneAuthController);
+      await _auth.signInWithCredential(phoneAuthController);
       setState(() {
         showSpinner = false;
       });

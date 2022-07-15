@@ -34,7 +34,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _OTPFormKey = GlobalKey<FormState>();
 
   bool showSpinner = false;
-  String pattern = "^[0][\d]{3}-[\d]{7}\$";
+  String pattern = '^(?:[+0]9)?[0-9]{11}\$';
   MobileVerificationState currentState =
       MobileVerificationState.SHOW_REGISTER_FORM_STATE;
   late String verificationId;
@@ -190,10 +190,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       // this will be checking if we have any value in it or not?
                       return "Field required";
                     }
-                    // if (!RegExp(pattern).hasMatch(value)) {
-                    //   // this will be checking whether the value in it is an email or not?
-                    //   return "Enter a valid phone";
-                    // }
+                    if (!RegExp(pattern).hasMatch(value)) {
+                      // this will be checking whether the value in it is a phone or not?
+                      return "Enter a valid phone";
+                    }
                     return null;
                   },
                   textInputAction: TextInputAction.next,
@@ -218,6 +218,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     elevation: 5.0,
                     child: MaterialButton(
                       onPressed: () async {
+                        try{
+
+
                         if (_formKey.currentState!.validate()) {
                           setState(() {
                             showSpinner = true;
@@ -263,9 +266,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               print(resendingToken);
                             },
                             codeAutoRetrievalTimeout: (verificationId) async {},
-                            timeout: Duration(seconds: 90),
+                            // timeout: Duration(seconds: 90),
                           );
                           FocusManager.instance.primaryFocus?.unfocus();
+                        }
+                        }catch(e){
+                          print(e.toString());
+                          Fluttertoast.showToast(msg: e.toString());
                         }
                       },
                       splashColor: null,
