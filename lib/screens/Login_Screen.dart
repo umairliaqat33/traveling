@@ -101,8 +101,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                             await _auth.verifyPhoneNumber(
                               phoneNumber: phoneController.text,
-                              verificationCompleted: (
-                                  phoneAuthCredential) async {
+                              verificationCompleted:
+                                  (phoneAuthCredential) async {
                                 setState(() {
                                   showSpinner = false;
                                 });
@@ -133,21 +133,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   //   context,
                                   //   MaterialPageRoute(builder: (context) => OTP()),
                                   // );
-                                  currentState =
-                                      MobileVerificationState
-                                          .SHOW_OTP_FORM_STATE;
+                                  currentState = MobileVerificationState
+                                      .SHOW_OTP_FORM_STATE;
                                 });
                                 Fluttertoast.showToast(msg: "Code Sent");
                                 print(verificationID.toString());
                                 print(resendingToken.toString());
                               },
-                              codeAutoRetrievalTimeout: (
-                                  verificationId) async {},
+                              codeAutoRetrievalTimeout:
+                                  (verificationId) async {},
                               // timeout: Duration(seconds: 90),
                             );
                             FocusManager.instance.primaryFocus?.unfocus();
                           }
-                        }catch(e){
+                        } catch (e) {
                           print(e.toString());
                         }
                       },
@@ -168,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ButtonStyle(
                           splashFactory: NoSplash
                               .splashFactory //removing onclick splash color
-                      ),
+                          ),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -225,9 +224,9 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () async {
               if (_OTPFormKey.currentState!.validate()) {
                 PhoneAuthCredential phoneAuthController =
-                PhoneAuthProvider.credential(
-                    verificationId: verificationId,
-                    smsCode: OTPController.text);
+                    PhoneAuthProvider.credential(
+                        verificationId: verificationId,
+                        smsCode: OTPController.text);
                 signInWithPhoneAuthCredential(phoneAuthController);
               }
             },
@@ -243,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       final authCredential =
-      await _auth.signInWithCredential(phoneAuthController);
+          await _auth.signInWithCredential(phoneAuthController);
       setState(() {
         showSpinner = false;
       });

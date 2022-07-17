@@ -218,59 +218,59 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     elevation: 5.0,
                     child: MaterialButton(
                       onPressed: () async {
-                        try{
-
-
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            showSpinner = true;
-                          });
-                          await _auth.verifyPhoneNumber(
-                            phoneNumber: phoneController.text,
-                            verificationCompleted: (phoneAuthCredential) async {
-                              setState(() {
-                                showSpinner = false;
-                              });
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          WelcomeUserScreen()));
-                              Fluttertoast.showToast(msg: "Number verified");
-                            },
-                            verificationFailed: (verificationFailed) async {
-                              // Fluttertoast.showToast(msg: verificationFailed.message.toString());
-                              print(verificationFailed.message.toString());
-                              Fluttertoast.showToast(
-                                  msg: "Verification Failed" +
-                                      verificationFailed.message.toString());
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
-                            },
-                            codeSent: (verificationID, resendingToken) async {
-                              setState(() {
-                                this.verificationId = verificationID;
-                                showSpinner = false;
-                                // sleep(const Duration(seconds: 5));
-                                // Navigator.pushReplacement(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) => OTP()),
-                                // );
-                                currentState =
-                                    MobileVerificationState.SHOW_OTP_FORM_STATE;
-                              });
-                              Fluttertoast.showToast(msg: "Code Sent");
-                              print(verificationID);
-                              print(resendingToken);
-                            },
-                            codeAutoRetrievalTimeout: (verificationId) async {},
-                            // timeout: Duration(seconds: 90),
-                          );
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        }
-                        }catch(e){
+                        try {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              showSpinner = true;
+                            });
+                            await _auth.verifyPhoneNumber(
+                              phoneNumber: phoneController.text,
+                              verificationCompleted:
+                                  (phoneAuthCredential) async {
+                                setState(() {
+                                  showSpinner = false;
+                                });
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            WelcomeUserScreen()));
+                                Fluttertoast.showToast(msg: "Number verified");
+                              },
+                              verificationFailed: (verificationFailed) async {
+                                // Fluttertoast.showToast(msg: verificationFailed.message.toString());
+                                print(verificationFailed.message.toString());
+                                Fluttertoast.showToast(
+                                    msg: "Verification Failed" +
+                                        verificationFailed.message.toString());
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()));
+                              },
+                              codeSent: (verificationID, resendingToken) async {
+                                setState(() {
+                                  this.verificationId = verificationID;
+                                  showSpinner = false;
+                                  // sleep(const Duration(seconds: 5));
+                                  // Navigator.pushReplacement(
+                                  //   context,
+                                  //   MaterialPageRoute(builder: (context) => OTP()),
+                                  // );
+                                  currentState = MobileVerificationState
+                                      .SHOW_OTP_FORM_STATE;
+                                });
+                                Fluttertoast.showToast(msg: "Code Sent");
+                                print(verificationID);
+                                print(resendingToken);
+                              },
+                              codeAutoRetrievalTimeout:
+                                  (verificationId) async {},
+                              // timeout: Duration(seconds: 90),
+                            );
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          }
+                        } catch (e) {
                           print(e.toString());
                           Fluttertoast.showToast(msg: e.toString());
                         }
