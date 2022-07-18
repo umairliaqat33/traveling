@@ -266,7 +266,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               },
                               codeAutoRetrievalTimeout:
                                   (verificationId) async {},
-                              // timeout: Duration(seconds: 90),
+                              timeout: Duration(seconds: 90),
                             );
                             FocusManager.instance.primaryFocus?.unfocus();
                           }

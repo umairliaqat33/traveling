@@ -43,15 +43,16 @@ class _WelcomeUserScreenState extends State<WelcomeUserScreen> {
           fname = value.get('firstName');
         });
       });
-      // setState(() {
-      //   lname = FirebaseAuth.instance.currentUser!.displayName.toString();
-      // fname = value.get('firstName');
-      // });
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       print(e.toString());
     }
     // FirebaseAuth.instance.currentUser?.displayName;
+  }
+  @override
+  void initState() {
+    super.initState();
+    getValues();
   }
 
   @override

@@ -112,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         builder: (context) =>
                                             WelcomeUserScreen()));
                                 Fluttertoast.showToast(msg: "Number verified");
+                                print("Number verified");
                                 print(phoneAuthCredential.toString());
                               },
                               verificationFailed: (verificationFailed) async {
@@ -137,12 +138,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       .SHOW_OTP_FORM_STATE;
                                 });
                                 Fluttertoast.showToast(msg: "Code Sent");
+                                print("Code sent");
                                 print(verificationID.toString());
                                 print(resendingToken.toString());
                               },
                               codeAutoRetrievalTimeout:
                                   (verificationId) async {},
-                              // timeout: Duration(seconds: 90),
+                              timeout: Duration(seconds: 90),
                             );
                             FocusManager.instance.primaryFocus?.unfocus();
                           }
@@ -219,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-        Text("code will be sent after 90 seconds if not verified"),
+        Text("Time out after 90 seconds if not verified"),
         TextButton(
             onPressed: () async {
               if (_OTPFormKey.currentState!.validate()) {
